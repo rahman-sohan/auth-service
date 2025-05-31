@@ -35,9 +35,6 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get('validate')
     async validateToken(@Req() req) {
-        return {
-            isValid: true,
-            user: req.user,
-        };
+        return this.authService.validateToken(req.user);
     }
 }

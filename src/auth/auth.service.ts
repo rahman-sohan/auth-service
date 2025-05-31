@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import * as bcrypt from 'bcrypt';
 import { DatabaseService } from '../database/database.service';
 import { RegisterDto } from './dto/register.dto';
@@ -29,10 +28,15 @@ export class AuthService {
             password: hashedPassword,
         });
 
+        if (!user) {
+            throw new BadRequestException('Failed to create user');
+        }
+        const userId = (user as any)._id?.toString();
+
         this.rabbitMqService.publish({
             pattern: 'user.created',
             data: {
-                id: user._id.toString(),
+                id: userId,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
@@ -44,7 +48,7 @@ export class AuthService {
 
         return {
             user: {
-                id: user._id,
+                id: userId,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
@@ -70,10 +74,11 @@ export class AuthService {
         });
 
         const tokens = this.generateTokens(user);
+        const userId = (user as any)._id?.toString();
 
         return {
             user: {
-                id: user._id,
+                id: userId,
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
@@ -102,9 +107,24 @@ export class AuthService {
         }
     }
 
+    async validateToken(user) {
+        if (!user || !user.id) {
+            throw new UnauthorizedException('Invalid token');
+        }
+
+        return {
+            isValid: true,
+            user,
+        };
+    }
+
     private generateTokens(user) {
+        const userId = (user as any)._id?.toString();
+        if (!userId) {
+            throw new BadRequestException('User ID is required to generate tokens');
+        }
         const payload = {
-            sub: user._id.toString(),
+            sub: userId,
             email: user.email,
             fullName: user.firstName + ' ' + user.lastName,
             role: user.role,

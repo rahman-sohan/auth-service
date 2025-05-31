@@ -1,16 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type UserDocument = Document & User;
-
-@Schema({
-    timestamps: true,
-    collection: 'users',
-})
-export class User {
-    @Prop({ type: Types.ObjectId, auto: true })
+// Explicitly define the structure including MongoDB's _id field
+export interface UserDocument extends Document, User {
     _id: Types.ObjectId;
+}
 
+@Schema({ timestamps: true, collection: 'users' })
+export class User {
     @Prop({ required: true })
     firstName: string;
 

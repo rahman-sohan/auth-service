@@ -9,12 +9,14 @@ export class DatabaseService {
         @InjectModel(User.name, 'auth-service') private readonly userModel: Model<UserDocument>,
     ) {}
 
-    async createNewUser(userData: Partial<User>): Promise<User> {
-        const user = await this.userModel.create(userData);
-        return user;
+    async createNewUser(userData: Partial<User>): Promise<UserDocument> {
+        const newUser = new this.userModel(userData);
+        
+        const savedUser = await newUser.save();
+        return savedUser;
     }
 
-    async findUserById(id: string): Promise<User> {
+    async findUserById(id: string): Promise<UserDocument> {
         const user = await this.userModel.findById(new Types.ObjectId(id));
         if (!user) {
             throw new NotFoundException('User not found');
@@ -22,7 +24,7 @@ export class DatabaseService {
         return user;
     }
 
-    async updateUser(id: string, userData: Partial<User>): Promise<User> {
+    async updateUser(id: string, userData: Partial<User>): Promise<UserDocument> {
         const updatedUser = await this.userModel.findByIdAndUpdate(
             new Types.ObjectId(id),
             { $set: userData },
@@ -41,11 +43,11 @@ export class DatabaseService {
         }
     }
 
-    async findUserByEmail(email: string): Promise<User | null> {
+    async findUserByEmail(email: string): Promise<UserDocument | null> {
         return this.userModel.findOne({ email });
     }
 
-    async findAllUsers(): Promise<User[]> {
+    async findAllUsers(): Promise<UserDocument[]> {
         return this.userModel.find();
     }
 }

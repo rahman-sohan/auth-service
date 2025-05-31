@@ -15,10 +15,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(payload: any) {
         return {
-            id: payload.sub,
+            id: payload.sub, // This is the MongoDB document ID
             email: payload.email,
-            firstName: payload.firstName,
-            lastName: payload.lastName,
+            fullName: payload.fullName,
             role: payload.role,
         };
     }

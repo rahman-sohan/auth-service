@@ -7,9 +7,10 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { DatabaseModule } from '../database/database.module';
 import { UserEventsListener } from './user-events.listener';
+import { MessageBrokerRabbitmqModule } from 'src/message-broker-rabbitmq/message-broker-rabbitmq.module';
 
 @Module({
-    imports: [DatabaseModule, PassportModule, JwtModule.register({}), EventEmitterModule.forRoot()],
+    imports: [DatabaseModule, MessageBrokerRabbitmqModule, PassportModule, JwtModule.register({})],
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy, UserEventsListener],
     exports: [AuthService],
