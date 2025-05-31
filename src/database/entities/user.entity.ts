@@ -5,7 +5,7 @@ export type UserDocument = Document & User;
 
 @Schema({
     timestamps: true,
-    collection: 'users'
+    collection: 'users',
 })
 export class User {
     @Prop({ type: Types.ObjectId, auto: true })

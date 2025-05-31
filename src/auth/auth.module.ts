@@ -14,5 +14,4 @@ import { UserEventsListener } from './user-events.listener';
     providers: [AuthService, JwtStrategy, UserEventsListener],
     exports: [AuthService],
 })
-
 export class AuthModule {}

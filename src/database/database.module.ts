@@ -9,12 +9,15 @@ import { User, UserSchema } from './entities/user.entity';
         MongooseModule.forRoot(APP_CONFIG.MONGO_URI, {
             connectionName: 'auth-service',
         }),
-        MongooseModule.forFeature([
-            { 
-                name: User.name, 
-                schema: UserSchema 
-            }
-        ], 'auth-service'),
+        MongooseModule.forFeature(
+            [
+                {
+                    name: User.name,
+                    schema: UserSchema,
+                },
+            ],
+            'auth-service',
+        ),
     ],
     providers: [DatabaseService],
     exports: [DatabaseService],

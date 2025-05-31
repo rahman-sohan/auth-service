@@ -26,7 +26,7 @@ export class DatabaseService {
         const updatedUser = await this.userModel.findByIdAndUpdate(
             new Types.ObjectId(id),
             { $set: userData },
-            { new: true }
+            { new: true },
         );
         if (!updatedUser) {
             throw new NotFoundException('User not found');

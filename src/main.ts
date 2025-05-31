@@ -11,7 +11,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
     app.setGlobalPrefix('api/v1/auth');
-    
+
     app.useGlobalFilters(new AllExceptionsFilter());
 
     await app.listen(process.env.PORT ?? 3000);

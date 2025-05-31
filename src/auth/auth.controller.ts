@@ -7,35 +7,35 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.signupNewUser(registerDto);
-  }
+    @Post('register')
+    async register(@Body() registerDto: RegisterDto) {
+        return this.authService.signupNewUser(registerDto);
+    }
 
-  @Post('login')
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
-  }
+    @Post('login')
+    async login(@Body() loginDto: LoginDto) {
+        return this.authService.login(loginDto);
+    }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logout(@Req() req) {
-    return this.authService.logout(req.user.id);
-  }
+    @UseGuards(JwtAuthGuard)
+    @Post('logout')
+    async logout(@Req() req) {
+        return this.authService.logout(req.user.id);
+    }
 
-  @Post('refresh-token')
-  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshToken(refreshTokenDto.refreshToken);
-  }
+    @Post('refresh-token')
+    async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+        return this.authService.refreshToken(refreshTokenDto.refreshToken);
+    }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('validate')
-  async validateToken(@Req() req) {
-    return {
-      isValid: true,
-      user: req.user
-    };
-  }
+    @UseGuards(JwtAuthGuard)
+    @Get('validate')
+    async validateToken(@Req() req) {
+        return {
+            isValid: true,
+            user: req.user,
+        };
+    }
 }
