@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 import { DatabaseService } from '../database/database.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { Types } from 'mongoose';
 import { APP_CONFIG } from '../config/default.config';
 
 @Injectable()
@@ -16,23 +15,19 @@ export class AuthService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async register(registerDto: RegisterDto) {
-    // Check if user already exists
+  async signupNewUser(registerDto: RegisterDto) {
     const existingUser = await this.databaseService.findUserByEmail(registerDto.email);
     if (existingUser) {
       throw new BadRequestException('User with this email already exists');
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
-    // Create user
-    const user = await this.databaseService.createUser({
+    const user = await this.databaseService.createNewUser({
       ...registerDto,
       password: hashedPassword,
     });
 
-    // Emit user created event
     this.eventEmitter.emit('user.created', {
       id: user._id,
       email: user.email,
@@ -41,7 +36,6 @@ export class AuthService {
       role: user.role,
     });
 
-    // Generate tokens
     const tokens = this.generateTokens(user);
 
     return {
@@ -57,24 +51,20 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    // Find user by email
     const user = await this.databaseService.findUserByEmail(loginDto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Validate password
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Update last login time
     await this.databaseService.updateUser(user._id.toString(), { 
       lastLogin: new Date() 
     });
 
-    // Generate tokens
     const tokens = this.generateTokens(user);
 
     return {
@@ -90,7 +80,6 @@ export class AuthService {
   }
 
   async logout(userId: string) {
-    // In a real app, we might invalidate the refresh token here
     return { success: true };
   }
 
@@ -123,6 +112,7 @@ export class AuthService {
         secret: APP_CONFIG.JWT_ACCESS_SECRET,
         expiresIn: APP_CONFIG.JWT_ACCESS_EXPIRY,
       }),
+
       refreshToken: this.jwtService.sign(payload, {
         secret: APP_CONFIG.JWT_REFRESH_SECRET,
         expiresIn: APP_CONFIG.JWT_REFRESH_EXPIRY,

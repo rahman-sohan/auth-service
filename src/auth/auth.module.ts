@@ -9,14 +9,10 @@ import { DatabaseModule } from '../database/database.module';
 import { UserEventsListener } from './user-events.listener';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    PassportModule,
-    JwtModule.register({}),
-    EventEmitterModule.forRoot(),
-  ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, UserEventsListener],
-  exports: [AuthService],
+    imports: [DatabaseModule, PassportModule, JwtModule.register({}), EventEmitterModule.forRoot()],
+    controllers: [AuthController],
+    providers: [AuthService, JwtStrategy, UserEventsListener],
+    exports: [AuthService],
 })
+
 export class AuthModule {}

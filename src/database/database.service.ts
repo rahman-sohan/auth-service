@@ -9,7 +9,7 @@ export class DatabaseService {
         @InjectModel(User.name, 'auth-service') private readonly userModel: Model<UserDocument>,
     ) {}
 
-    async createUser(userData: Partial<User>): Promise<User> {
+    async createNewUser(userData: Partial<User>): Promise<User> {
         const user = await this.userModel.create(userData);
         return user;
     }
