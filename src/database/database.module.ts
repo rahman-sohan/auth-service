@@ -1,27 +1,18 @@
 import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { APP_CONFIG } from '../config/default.config';
-import { TypegooseModule } from 'nestjs-typegoose';
-import { User } from './entities/user.entity';
-
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from './entities/user.entity';
 
 @Module({
     imports: [
-        TypegooseModule.forRootAsync({
-            useFactory: () => ({
-                uri: APP_CONFIG.MONGO_URI,
-                connectionName: 'auth-service',
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            }),
+        MongooseModule.forRoot(APP_CONFIG.MONGO_URI, {
+            connectionName: 'auth-service',
         }),
-        TypegooseModule.forFeature([
-            {
-                typegooseClass: User,
-                schemaOptions: {
-                    collection: 'users',
-                    timestamps: true,
-                }
+        MongooseModule.forFeature([
+            { 
+                name: User.name, 
+                schema: UserSchema 
             }
         ], 'auth-service'),
     ],

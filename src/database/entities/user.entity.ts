@@ -1,44 +1,45 @@
-import { prop, modelOptions } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
 
-@modelOptions({
-    schemaOptions: {
-        timestamps: true,
-        collection: 'users'
-    }
+export type UserDocument = Document & User;
+
+@Schema({
+    timestamps: true,
+    collection: 'users'
 })
-
 export class User {
-    @prop({ type: () => Types.ObjectId, auto: true })
+    @Prop({ type: Types.ObjectId, auto: true })
     _id: Types.ObjectId;
 
-    @prop({ required: true })
+    @Prop({ required: true })
     firstName: string;
 
-    @prop({ required: true })
+    @Prop({ required: true })
     lastName: string;
 
-    @prop({ required: true, unique: true })
+    @Prop({ required: true, unique: true })
     email: string;
 
-    @prop({ required: true })
+    @Prop({ required: true })
     password: string;
 
-    @prop({ default: false })
+    @Prop({ default: false })
     isVerified: boolean;
 
-    @prop({ default: 'user' })
+    @Prop({ default: 'user' })
     role: string;
 
-    @prop()
+    @Prop()
     phoneNumber?: string;
 
-    @prop()
+    @Prop()
     image?: string;
 
-    @prop({ default: true })
+    @Prop({ default: true })
     isActive: boolean;
 
-    @prop()
+    @Prop()
     lastLogin?: Date;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
