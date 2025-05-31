@@ -18,6 +18,7 @@ export class DatabaseService {
 
     async findUserById(id: string): Promise<UserDocument> {
         const user = await this.userModel.findById(new Types.ObjectId(id));
+        
         if (!user) {
             throw new NotFoundException('User not found');
         }

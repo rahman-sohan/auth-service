@@ -29,12 +29,10 @@ export class AuthController {
     async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
         return this.authService.refreshToken(refreshTokenDto.refreshToken);
     }
-
-    // Endpoint to validate JWT token and return user info with an event using rabbitmq
     
     @UseGuards(JwtAuthGuard)
     @Get('validate')
-    async validateToken(@Req() req) {
+    async validateToken(@Req() req) {        
         return this.authService.validateToken(req.user);
     }
 }

@@ -33,7 +33,7 @@ export class AuthService {
         }
         const userId = (user as any)._id?.toString();
 
-        this.rabbitMqService.publish({
+        this.rabbitMqService.publishToAuthExchange({
             pattern: 'user.created',
             data: {
                 id: userId,
@@ -109,8 +109,21 @@ export class AuthService {
 
     async validateToken(user) {
         if (!user || !user.id) {
-            throw new UnauthorizedException('Invalid token');
+            throw new UnauthorizedException('Invalid user data');
         }
+
+        const userFromDb = await this.databaseService.findUserById(user.id);
+        
+        this.rabbitMqService.publishToAuthExchange({
+            pattern: 'user.validated',
+            data: {
+                id: userFromDb._id.toString(),
+                email: userFromDb.email,
+                firstName: userFromDb.firstName,
+                lastName: userFromDb.lastName,
+                role: userFromDb.role,
+            },
+        });
 
         return {
             isValid: true,

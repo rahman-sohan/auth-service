@@ -20,7 +20,13 @@ import { APP_CONFIG } from 'src/config/default.config';
 					createQueueIfNotExists: true,
 					exchange: 'auth_service',
 					routingKey: ['user.created', 'user.updated'],
-				}
+				},
+				{
+					name: 'auth_user_validation',
+					createQueueIfNotExists: true,
+					exchange: 'auth_service',
+					routingKey: ['user.validated'],
+				},
 			],
 			uri: APP_CONFIG.RABBITMQ_URL,
 		})
