@@ -1,7 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsJWT } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class RefreshTokenDto {
     @IsNotEmpty()
-    @IsString()
+    @IsJWT()
+    @Transform(({ value }) => value?.trim())
     refreshToken: string;
 }

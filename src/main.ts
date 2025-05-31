@@ -8,9 +8,16 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     app.enableCors({ origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', credentials: true });
-    app.useGlobalPipes(new ValidationPipe({ transform: true }));
+    app.useGlobalPipes(new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidUnknownValues: true,
+        stopAtFirstError: true,
+    }));
 
-    app.setGlobalPrefix('api/v1/auth');
+    app.setGlobalPrefix('api/v1');
 
     app.useGlobalFilters(new AllExceptionsFilter());
 
