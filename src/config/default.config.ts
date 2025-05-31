@@ -7,4 +7,5 @@ export const APP_CONFIG = {
     JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET ?? 'sohaur_rahman',
     JWT_ACCESS_EXPIRY: process.env.JWT_ACCESS_EXPIRY ?? '15m',
     JWT_REFRESH_EXPIRY: process.env.JWT_REFRESH_EXPIRY ?? '7d',
+    RABBITMQ_URL: process.env.RABBITMQ_URL ?? 'amqp://localhost:5672',
 };

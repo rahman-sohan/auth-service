@@ -6,34 +6,38 @@ import { DatabaseService } from '../database/database.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { APP_CONFIG } from '../config/default.config';
+import { MessageBrokerRabbitmqService } from 'src/message-broker-rabbitmq/message-broker-rabbitmq.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly databaseService: DatabaseService,
         private readonly jwtService: JwtService,
-        private readonly eventEmitter: EventEmitter2,
+        private readonly rabbitMqService: MessageBrokerRabbitmqService,
     ) {}
 
-    async signupNewUser(registerDto: RegisterDto) {
-        const existingUser = await this.databaseService.findUserByEmail(registerDto.email);
+    async signupNewUser(registerPayload: RegisterDto) {
+        const existingUser = await this.databaseService.findUserByEmail(registerPayload.email);
         if (existingUser) {
             throw new BadRequestException('User with this email already exists');
         }
 
-        const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+        const hashedPassword = await bcrypt.hash(registerPayload.password, 10);
 
         const user = await this.databaseService.createNewUser({
-            ...registerDto,
+            ...registerPayload,
             password: hashedPassword,
         });
 
-        this.eventEmitter.emit('user.created', {
-            id: user._id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
+        this.rabbitMqService.publish({
+            pattern: 'user.created',
+            data: {
+                id: user._id.toString(),
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role,
+            },
         });
 
         const tokens = this.generateTokens(user);
@@ -50,13 +54,13 @@ export class AuthService {
         };
     }
 
-    async login(loginDto: LoginDto) {
-        const user = await this.databaseService.findUserByEmail(loginDto.email);
+    async userLogin(loginPayload: LoginDto) {
+        const user = await this.databaseService.findUserByEmail(loginPayload.email);
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+        const isPasswordValid = await bcrypt.compare(loginPayload.password, user.password);
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials');
         }
@@ -100,10 +104,9 @@ export class AuthService {
 
     private generateTokens(user) {
         const payload = {
-            email: user.email,
             sub: user._id.toString(),
-            firstName: user.firstName,
-            lastName: user.lastName,
+            email: user.email,
+            fullName: user.firstName + ' ' + user.lastName,
             role: user.role,
         };
 

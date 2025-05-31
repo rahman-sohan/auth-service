@@ -10,18 +10,18 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('register')
-    async register(@Body() registerDto: RegisterDto) {
-        return this.authService.signupNewUser(registerDto);
+    async registerNewUser(@Body() registerPayload: RegisterDto) {
+        return this.authService.signupNewUser(registerPayload);
     }
 
     @Post('login')
-    async login(@Body() loginDto: LoginDto) {
-        return this.authService.login(loginDto);
+    async userLogin(@Body() loginPayload: LoginDto) {
+        return this.authService.userLogin(loginPayload);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('logout')
-    async logout(@Req() req) {
+    async userLogout(@Req() req) {
         return this.authService.logout(req.user.id);
     }
 
@@ -30,6 +30,8 @@ export class AuthController {
         return this.authService.refreshToken(refreshTokenDto.refreshToken);
     }
 
+    // Endpoint to validate JWT token and return user info with an event using rabbitmq
+    
     @UseGuards(JwtAuthGuard)
     @Get('validate')
     async validateToken(@Req() req) {
