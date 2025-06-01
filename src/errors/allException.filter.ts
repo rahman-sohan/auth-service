@@ -36,6 +36,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
             });
         }
 
+        if (exception.status === HttpStatus.UNAUTHORIZED) {
+            return response.status(HttpStatus.UNAUTHORIZED).json({
+                code: 'E_UNAUTHORIZED',
+                message: 'Unauthorized',
+                errors: [(exception.getResponse() as any).message],
+            });
+        }
+
+        if (exception.status === HttpStatus.FORBIDDEN) {
+            return response.status(HttpStatus.FORBIDDEN).json({
+                code: 'E_FORBIDDEN',
+                message: 'Forbidden',
+                errors: [(exception.getResponse() as any).message],
+            });
+        }
+
         return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
             code: 'INTERNAL_SERVER_ERROR',
             message: 'Internal Server Error',
