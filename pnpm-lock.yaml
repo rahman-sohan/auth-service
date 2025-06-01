@@ -35,6 +35,9 @@ importers:
       '@nestjs/platform-express':
         specifier: ^11.0.1
         version: 11.1.2(@nestjs/common@11.1.2(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.2)
+      '@typegoose/typegoose':
+        specifier: ^12.1.0
+        version: 12.16.0(mongoose@8.15.1(socks@2.8.4))
       amqp-connection-manager:
         specifier: ^4.1.14
         version: 4.1.14(amqplib@0.10.8)
@@ -56,6 +59,9 @@ importers:
       mongoose:
         specifier: ^8.15.1
         version: 8.15.1(socks@2.8.4)
+      nestjs-typegoose:
+        specifier: ^7.1.38
+        version: 7.1.38(@nestjs/common@11.1.2(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.2)(@typegoose/typegoose@12.16.0(mongoose@8.15.1(socks@2.8.4)))(mongoose@8.15.1(socks@2.8.4))
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -1043,6 +1049,12 @@ packages:
 
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+
+  '@typegoose/typegoose@12.16.0':
+    resolution: {integrity: sha512-uTfX2ImVVNyKZ0V3O/8JA9rIhJko2uj5KWijORfcGaNCUjGlNz0ARMyw3bmDHWszB3X2VkPXv/aNUaWmbwPD7g==}
+    engines: {node: '>=16.20.1'}
+    peerDependencies:
+      mongoose: ~8.15.0
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2274,6 +2286,9 @@ packages:
   is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
 
+  is-class@0.0.9:
+    resolution: {integrity: sha512-kUfRnejcRC9YLgblxoJ76dp9gZ3vMKTrDS5I6z2UVMOsHHSImNKCJocjQTkZr38PwiSZ9LVklaHEENaVYeFTXg==}
+
   is-core-module@2.16.1:
     resolution: {integrity: sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w==}
     engines: {node: '>= 0.4'}
@@ -2631,6 +2646,10 @@ packages:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
     engines: {node: '>=10'}
 
+  loglevel@1.9.2:
+    resolution: {integrity: sha512-HgMmCqIJSAKqo68l0rS2AanEWfkxaZ5wNiEFb5ggm08lDs9Xl2KxBlX3PTcaD2chBM1gXAYf491/M2Rv8Jwayg==}
+    engines: {node: '>= 0.6.0'}
+
   lowercase-keys@3.0.0:
     resolution: {integrity: sha512-ozCC6gdQ+glXOQsveKD0YsDy8DSQFjDTz4zyzEHNV5+JP5D62LmfDZ6o1cycFx9ouG940M5dE8C8CTewdj2YWQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -2814,6 +2833,15 @@ packages:
 
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+
+  nestjs-typegoose@7.1.38:
+    resolution: {integrity: sha512-hYgDliG2IS5CJkzRsTbbfwZk+IP0jEyCaxcRqqXvxZaP5miiH9UvGm3K0hg8X5DuVkmsgTzW3+MxOXmcLm9BOA==}
+    engines: {node: '>=8.10.0'}
+    peerDependencies:
+      '@nestjs/common': ^6.10.1 || ^7.0.0
+      '@nestjs/core': ^6.10.1 || ^7.0.0
+      '@typegoose/typegoose': ^6.2.1 || ^7.0.0
+      mongoose: ^5.10.6
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
@@ -3071,6 +3099,9 @@ packages:
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
+
+  reflect-metadata@0.1.14:
+    resolution: {integrity: sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==}
 
   reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
@@ -4685,6 +4716,15 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
+  '@typegoose/typegoose@12.16.0(mongoose@8.15.1(socks@2.8.4))':
+    dependencies:
+      lodash: 4.17.21
+      loglevel: 1.9.2
+      mongoose: 8.15.1(socks@2.8.4)
+      reflect-metadata: 0.2.2
+      semver: 7.7.2
+      tslib: 2.8.1
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.27.4
@@ -6076,6 +6116,8 @@ snapshots:
 
   is-arrayish@0.2.1: {}
 
+  is-class@0.0.9: {}
+
   is-core-module@2.16.1:
     dependencies:
       hasown: 2.0.2
@@ -6595,6 +6637,8 @@ snapshots:
       chalk: 4.1.2
       is-unicode-supported: 0.1.0
 
+  loglevel@1.9.2: {}
+
   lowercase-keys@3.0.0: {}
 
   lru-cache@11.1.0: {}
@@ -6745,6 +6789,15 @@ snapshots:
   negotiator@1.0.0: {}
 
   neo-async@2.6.2: {}
+
+  nestjs-typegoose@7.1.38(@nestjs/common@11.1.2(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.2)(@typegoose/typegoose@12.16.0(mongoose@8.15.1(socks@2.8.4)))(mongoose@8.15.1(socks@2.8.4)):
+    dependencies:
+      '@nestjs/common': 11.1.2(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.2(@nestjs/common@11.1.2(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.1.2)(@nestjs/platform-express@11.1.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@typegoose/typegoose': 12.16.0(mongoose@8.15.1(socks@2.8.4))
+      is-class: 0.0.9
+      mongoose: 8.15.1(socks@2.8.4)
+      reflect-metadata: 0.1.14
 
   node-abort-controller@3.1.1: {}
 
@@ -6972,6 +7025,8 @@ snapshots:
       util-deprecate: 1.0.2
 
   readdirp@4.1.2: {}
+
+  reflect-metadata@0.1.14: {}
 
   reflect-metadata@0.2.2: {}
 

@@ -1,43 +1,52 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { prop, modelOptions, index, Severity } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 
-// Explicitly define the structure including MongoDB's _id field
-export interface UserDocument extends Document, User {
-    _id: Types.ObjectId;
-}
-
-@Schema({ timestamps: true, collection: 'users' })
+// Model with Typegoose
+@modelOptions({ 
+  schemaOptions: { 
+    timestamps: true, 
+    collection: 'users' 
+  },
+  options: {
+    allowMixed: Severity.ALLOW,
+    customName: 'User' // Using customName instead of static name property
+  }
+})
+@index({ email: 1 }, { unique: true })
 export class User {
-    @Prop({ required: true })
+    @prop({ required: true })
     firstName: string;
 
-    @Prop({ required: true })
+    @prop({ required: true })
     lastName: string;
 
-    @Prop({ required: true, unique: true })
+    @prop({ required: true, unique: true })
     email: string;
 
-    @Prop({ required: true })
+    @prop({ required: true })
     password: string;
 
-    @Prop({ default: false })
+    @prop({ default: false })
     isVerified: boolean;
 
-    @Prop({ default: 'user' })
+    @prop({ default: 'user' })
     role: string;
 
-    @Prop()
+    @prop()
     phoneNumber?: string;
 
-    @Prop()
+    @prop()
     image?: string;
 
-    @Prop({ default: true })
+    @prop({ default: true })
     isActive: boolean;
 
-    @Prop()
+    @prop()
     lastLogin?: Date;
+    
+    // MongoDB id field
+    _id?: Types.ObjectId;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
-UserSchema.index({ email: 1 }, { unique: true });
+// Define UserDocument type for use throughout the application
+export type UserDocument = User & { _id: Types.ObjectId };
