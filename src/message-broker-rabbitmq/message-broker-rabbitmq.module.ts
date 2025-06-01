@@ -26,13 +26,7 @@ import { MessagePatterns } from '../common/constants/message-patterns';
                     createQueueIfNotExists: true,
                     exchange: 'auth_service',
                     routingKey: [MessagePatterns.TOKEN_VALIDATION_REQUEST],
-                },
-                {
-                    name: 'token_validation_response_queue',
-                    createQueueIfNotExists: true,
-                    exchange: 'auth_service',
-                    routingKey: [MessagePatterns.TOKEN_VALIDATION_RESPONSE],
-                },
+                }
             ],
             uri: APP_CONFIG.RABBITMQ_URL,
         }),

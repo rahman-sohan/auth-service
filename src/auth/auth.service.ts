@@ -120,19 +120,20 @@ export class AuthService {
                 userId = payload.sub;
             }
 
-            const userFromDb = await this.databaseService.findUserById(userId);
-            if (!userFromDb) {
+            const userDataFromDatabase = await this.databaseService.findUserById(userId);
+            
+            if (!userDataFromDatabase) {
                 throw new UnauthorizedException('User not found');
             }
 
             return {
                 isValid: true,
                 user: {
-                    id: userFromDb._id.toString(),
-                    email: userFromDb.email,
-                    firstName: userFromDb.firstName,
-                    lastName: userFromDb.lastName,
-                    role: userFromDb.role,
+                    id: userDataFromDatabase._id.toString(),
+                    email: userDataFromDatabase.email,
+                    firstName: userDataFromDatabase.firstName,
+                    lastName: userDataFromDatabase.lastName,
+                    role: userDataFromDatabase.role,
                 },
             };
         } catch (error) {
