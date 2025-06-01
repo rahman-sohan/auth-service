@@ -116,7 +116,7 @@ export class AuthService {
                 const payload = this.jwtService.verify(tokenOrUser, {
                     secret: APP_CONFIG.JWT_ACCESS_SECRET,
                 });
-        
+
                 userId = payload.sub;
             }
 
@@ -136,14 +136,13 @@ export class AuthService {
                     role: userFromDb.role,
                 },
             });
-            
         } catch (error) {
             console.error('Token validation error:', error);
             this.rabbitMqService.publishToAuthExchange({
                 pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
                 data: {
                     idValid: false,
-                    error: error.message || 'Token validation failed'
+                    error: error.message || 'Token validation failed',
                 },
             });
         }
