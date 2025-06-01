@@ -128,12 +128,14 @@ export class AuthService {
             this.rabbitMqService.publishToAuthExchange({
                 pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
                 data: {
-                    idValid: true,
-                    id: userFromDb._id.toString(),
-                    email: userFromDb.email,
-                    firstName: userFromDb.firstName,
-                    lastName: userFromDb.lastName,
-                    role: userFromDb.role,
+                    isValid: true,
+                    user: {
+                        id: userFromDb._id.toString(),
+                        email: userFromDb.email,
+                        firstName: userFromDb.firstName,
+                        lastName: userFromDb.lastName,
+                        role: userFromDb.role,
+                    },
                 },
             });
         } catch (error) {
@@ -141,7 +143,7 @@ export class AuthService {
             this.rabbitMqService.publishToAuthExchange({
                 pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
                 data: {
-                    idValid: false,
+                    isValid: false,
                     error: error.message || 'Token validation failed',
                 },
             });
