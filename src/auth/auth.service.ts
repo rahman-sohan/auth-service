@@ -125,28 +125,22 @@ export class AuthService {
                 throw new UnauthorizedException('User not found');
             }
 
-            this.rabbitMqService.publishToAuthExchange({
-                pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
-                data: {
-                    isValid: true,
-                    user: {
-                        id: userFromDb._id.toString(),
-                        email: userFromDb.email,
-                        firstName: userFromDb.firstName,
-                        lastName: userFromDb.lastName,
-                        role: userFromDb.role,
-                    },
+            return {
+                isValid: true,
+                user: {
+                    id: userFromDb._id.toString(),
+                    email: userFromDb.email,
+                    firstName: userFromDb.firstName,
+                    lastName: userFromDb.lastName,
+                    role: userFromDb.role,
                 },
-            });
+            };
         } catch (error) {
-            console.error('Token validation error:', error);
-            this.rabbitMqService.publishToAuthExchange({
-                pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
-                data: {
-                    isValid: false,
-                    error: error.message || 'Token validation failed',
-                },
-            });
+            console.error('Token validation error:', error.message);
+            return {
+                isValid: false,
+                error: error.message || 'Token validation failed',
+            };
         }
     }
 
