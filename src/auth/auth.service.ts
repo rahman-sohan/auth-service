@@ -6,6 +6,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { APP_CONFIG } from '../config/default.config';
 import { MessageBrokerRabbitmqService } from 'src/message-broker-rabbitmq/message-broker-rabbitmq.service';
+import { MessagePatterns } from '../common/constants/message-patterns';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
         const userId = (user as any)._id?.toString();
 
         this.rabbitMqService.publishToAuthExchange({
-            pattern: 'user.created',
+            pattern: MessagePatterns.USER_CREATED,
             data: {
                 id: userId,
                 email: user.email,
@@ -107,28 +108,45 @@ export class AuthService {
         }
     }
 
-    async validateToken(user) {
-        if (!user || !user.id) {
-            throw new UnauthorizedException('Invalid user data');
-        }
+    async validateToken(tokenOrUser: any) {
+        try {
+            let userId;
 
-        const userFromDb = await this.databaseService.findUserById(user.id);
+            if (typeof tokenOrUser === 'string') {
+                const payload = this.jwtService.verify(tokenOrUser, {
+                    secret: APP_CONFIG.JWT_ACCESS_SECRET,
+                });
         
-        this.rabbitMqService.publishToAuthExchange({
-            pattern: 'user.validated',
-            data: {
-                id: userFromDb._id.toString(),
-                email: userFromDb.email,
-                firstName: userFromDb.firstName,
-                lastName: userFromDb.lastName,
-                role: userFromDb.role,
-            },
-        });
+                userId = payload.sub;
+            }
 
-        return {
-            isValid: true,
-            user,
-        };
+            const userFromDb = await this.databaseService.findUserById(userId);
+            if (!userFromDb) {
+                throw new UnauthorizedException('User not found');
+            }
+
+            this.rabbitMqService.publishToAuthExchange({
+                pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
+                data: {
+                    idValid: true,
+                    id: userFromDb._id.toString(),
+                    email: userFromDb.email,
+                    firstName: userFromDb.firstName,
+                    lastName: userFromDb.lastName,
+                    role: userFromDb.role,
+                },
+            });
+            
+        } catch (error) {
+            console.error('Token validation error:', error);
+            this.rabbitMqService.publishToAuthExchange({
+                pattern: MessagePatterns.TOKEN_VALIDATION_RESPONSE,
+                data: {
+                    idValid: false,
+                    error: error.message || 'Token validation failed'
+                },
+            });
+        }
     }
 
     private generateTokens(user) {
@@ -139,7 +157,8 @@ export class AuthService {
         const payload = {
             sub: userId,
             email: user.email,
-            fullName: user.firstName + ' ' + user.lastName,
+            firstName: user.firstName,
+            lastName: user.lastName,
             role: user.role,
         };
 

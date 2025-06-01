@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { Payload } from '@nestjs/microservices';
 
 @Controller('auth')
 export class AuthController {
@@ -29,10 +30,10 @@ export class AuthController {
     async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
         return this.authService.refreshToken(refreshTokenDto.refreshToken);
     }
-    
+
     @UseGuards(JwtAuthGuard)
     @Get('validate')
-    async validateToken(@Req() req) {        
-        return this.authService.validateToken(req.user);
+    async validateToken(@Payload() payload: any) {
+        return this.authService.validateToken(payload);
     }
 }

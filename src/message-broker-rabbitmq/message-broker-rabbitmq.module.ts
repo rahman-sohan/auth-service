@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { MessageBrokerRabbitmqService } from './message-broker-rabbitmq.service';
 import { APP_CONFIG } from 'src/config/default.config';
+import { MessagePatterns } from '../common/constants/message-patterns';
 
 
 @Module({
@@ -19,14 +20,14 @@ import { APP_CONFIG } from 'src/config/default.config';
 					name: 'auth_user_events',
 					createQueueIfNotExists: true,
 					exchange: 'auth_service',
-					routingKey: ['user.created', 'user.updated'],
+					routingKey: [MessagePatterns.USER_CREATED, MessagePatterns.USER_UPDATED],
 				},
 				{
-					name: 'auth_user_validation',
+					name: 'token_validation_queue',
 					createQueueIfNotExists: true,
 					exchange: 'auth_service',
-					routingKey: ['user.validated'],
-				},
+					routingKey: [MessagePatterns.TOKEN_VALIDATION_REQUEST, MessagePatterns.TOKEN_VALIDATION_RESPONSE],
+				}
 			],
 			uri: APP_CONFIG.RABBITMQ_URL,
 		})
