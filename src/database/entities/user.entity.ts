@@ -1,7 +1,6 @@
 import { prop, modelOptions, index, Severity } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
-// Model with Typegoose
 @modelOptions({ 
   schemaOptions: { 
     timestamps: true, 
@@ -9,7 +8,7 @@ import { Types } from 'mongoose';
   },
   options: {
     allowMixed: Severity.ALLOW,
-    customName: 'User' // Using customName instead of static name property
+    customName: 'User'
   }
 })
 @index({ email: 1 }, { unique: true })
@@ -44,9 +43,7 @@ export class User {
     @prop()
     lastLogin?: Date;
     
-    // MongoDB id field
     _id?: Types.ObjectId;
 }
 
-// Define UserDocument type for use throughout the application
 export type UserDocument = User & { _id: Types.ObjectId };

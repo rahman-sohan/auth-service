@@ -5,7 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { getModelForClass } from '@typegoose/typegoose';
 
-// Create a Mongoose schema from the Typegoose model
 const UserModel = getModelForClass(User);
 
 @Module({
