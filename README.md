@@ -135,43 +135,62 @@ We use Docker Compose to run multiple services together. Create a `docker-compos
 version: '3.8'
 
 services:
-  auth-service:
-    build:
-      context: ./auth-service
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./auth-service/.env
-    depends_on:
-      - mongodb
-      - rabbitmq
-
-  # Add other services here
-  # other-service:
-  #   build: ./other-service
-  #   ports:
-  #     - "3001:3001"
-  #   env_file:
-  #     - ./other-service/.env
-  #   depends_on:
-  #     - mongodb
-  #     - rabbitmq
-
   mongodb:
     image: mongo:latest
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - microservices_network
 
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - microservices_network
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/auth
+      - RABBITMQ_URI=amqp://rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - microservices_network
+
+  product-service:
+    build:
+      context: ./product-service
+    container_name: product-service
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/products
+      - RABBITMQ_URI=amqp://rabbitmq:5672
+      - AUTH_SERVICE_URL=http://auth-service:3000
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - auth-service
+    networks:
+      - microservices_network
+
+networks:
+  microservices_network:
+    driver: bridge
 
 volumes:
   mongodb_data:
